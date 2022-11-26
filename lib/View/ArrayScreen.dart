@@ -9,6 +9,8 @@ import 'package:get/get.dart';
 import 'package:tasks/controllers/arrayController.dart';
 import 'package:tasks/utils/widgets.dart';
 
+final formKey = GlobalKey<FormState>();
+
 class ArrayScreen extends StatefulWidget {
   final int? index;
   final String? docId;
@@ -22,20 +24,25 @@ class ArrayScreen extends StatefulWidget {
 class _ArrayScreenState extends State<ArrayScreen> {
   final ArrayController arrayController = Get.find();
   final AuthController authController = Get.find();
-
+  late TextEditingController titleEditingController;
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     String? title = '';
-
     if (widget.index != null) {
       title = arrayController.arrays[widget.index!].title;
     }
+    titleEditingController = TextEditingController(text: title);
+  }
 
-    TextEditingController titleEditingController =
-        TextEditingController(text: title);
+  @override
+  void dispose() {
+    super.dispose();
+    titleEditingController.dispose();
+  }
 
-    final formKey = GlobalKey<FormState>();
-
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -65,6 +72,13 @@ class _ArrayScreenState extends State<ArrayScreen> {
               ),
               onPressed: () {
                 if (widget.index == null && formKey.currentState!.validate()) {
+                  for (var i = 0; i < arrayController.arrays.length; i++) {
+                    if (titleEditingController.text.toLowerCase() ==
+                        arrayController.arrays[i].title!.toLowerCase()) {
+                      titleEditingController.text =
+                          "${titleEditingController.text} - copy";
+                    }
+                  }
                   Database().addArray(
                       authController.user!.uid, titleEditingController.text);
                   Get.back();

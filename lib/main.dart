@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tasks/controllers/bindings/Bindings.dart';
@@ -9,6 +10,8 @@ import 'package:tasks/view/AuthScreen.dart';
 import 'package:tasks/view/MainScreen.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 Future main() async {
   tz.initializeTimeZones();
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,24 +30,32 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en', 'US'),
+      ],
       initialBinding: Binding(),
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       title: 'Tasks',
       theme: ThemeData(
           scaffoldBackgroundColor: Colors.black,
+          brightness: Brightness.dark,
           appBarTheme: const AppBarTheme(color: Colors.black)),
       home: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
-                  child: CircularProgressIndicator(
-                color: primaryColor,
-              ));
+                  child: CupertinoActivityIndicator(color: primaryColor));
             } else if (snapshot.hasError) {
               return Center(
-                  child: Text("Something went wrong!", style: heading(Colors.white)));
+                  child: Text("Something went wrong!",
+                      style: heading(Colors.white)));
             } else if (snapshot.hasData) {
               return const MainScreen();
             } else {
