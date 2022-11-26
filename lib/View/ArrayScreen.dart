@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 
+import 'package:flutter/cupertino.dart';
 import 'package:tasks/controllers/authController.dart';
 import 'package:tasks/services/database.service.dart';
 import 'package:tasks/utils/global.dart';
@@ -45,60 +46,54 @@ class _ArrayScreenState extends State<ArrayScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text((widget.index == null) ? 'New List' : 'Edit List',
-            style: menuTextStyle),
-        leadingWidth: 90.0,
-        leading: Center(
-          child: TextButton(
-            style: const ButtonStyle(
-              splashFactory: NoSplash.splashFactory,
-            ),
-            onPressed: () {
-              Get.back();
-            },
-            child: Text(
-              "Cancel",
-              style: actionButtonTextStyle,
-            ),
+      appBar: CupertinoNavigationBar(
+        padding: EdgeInsetsDirectional.zero,
+        backgroundColor: Colors.black,
+        leading: TextButton(
+          style: const ButtonStyle(
+            splashFactory: NoSplash.splashFactory,
+          ),
+          onPressed: () {
+            Get.back();
+          },
+          child: Text(
+            "Cancel",
+            style: actionButtonTextStyle,
           ),
         ),
-        centerTitle: true,
-        actions: [
-          Center(
-            child: TextButton(
-              style: const ButtonStyle(
-                splashFactory: NoSplash.splashFactory,
-              ),
-              onPressed: () {
-                if (widget.index == null && formKey.currentState!.validate()) {
-                  for (var i = 0; i < arrayController.arrays.length; i++) {
-                    if (titleEditingController.text.toLowerCase() ==
-                        arrayController.arrays[i].title!.toLowerCase()) {
-                      titleEditingController.text =
-                          "${titleEditingController.text} - copy";
-                    }
-                  }
-                  Database().addArray(
-                      authController.user!.uid, titleEditingController.text);
-                  Get.back();
-                  HapticFeedback.heavyImpact();
+        middle: Text((widget.index == null) ? 'New List' : 'Edit List',
+            style: menuTextStyle),
+        trailing: TextButton(
+          style: const ButtonStyle(
+            splashFactory: NoSplash.splashFactory,
+          ),
+          onPressed: () {
+            if (widget.index == null && formKey.currentState!.validate()) {
+              for (var i = 0; i < arrayController.arrays.length; i++) {
+                if (titleEditingController.text.toLowerCase() ==
+                    arrayController.arrays[i].title!.toLowerCase()) {
+                  titleEditingController.text =
+                      "${titleEditingController.text} - copy";
                 }
-                if (widget.index != null && formKey.currentState!.validate()) {
-                  var editing = arrayController.arrays[widget.index!];
-                  editing.title = titleEditingController.text;
-                  arrayController.arrays[widget.index!] = editing;
-                  Database().updateArray(
-                      authController.user!.uid, editing.title!, widget.docId!);
-                  Get.back();
-                  HapticFeedback.heavyImpact();
-                }
-              },
-              child: Text((widget.index == null) ? 'Add' : 'Update',
-                  style: actionButtonTextStyle),
-            ),
-          )
-        ],
+              }
+              Database().addArray(
+                  authController.user!.uid, titleEditingController.text);
+              Get.back();
+              HapticFeedback.heavyImpact();
+            }
+            if (widget.index != null && formKey.currentState!.validate()) {
+              var editing = arrayController.arrays[widget.index!];
+              editing.title = titleEditingController.text;
+              arrayController.arrays[widget.index!] = editing;
+              Database().updateArray(
+                  authController.user!.uid, editing.title!, widget.docId!);
+              Get.back();
+              HapticFeedback.heavyImpact();
+            }
+          },
+          child: Text((widget.index == null) ? 'Add' : 'Update',
+              style: actionButtonTextStyle),
+        ),
       ),
       body: SafeArea(
         child: Container(

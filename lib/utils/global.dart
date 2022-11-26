@@ -11,7 +11,7 @@ const tertiaryColor = Color.fromARGB(255, 37, 37, 37);
 // TextStyles
 
 TextStyle appBarTextStyle = GoogleFonts.notoSans(
-  fontSize: 30,
+  fontSize: 27,
   color: primaryColor,
   fontWeight: FontWeight.bold,
 );
@@ -51,7 +51,8 @@ TextStyle listInfoTextStyle = GoogleFonts.notoSans(
 );
 TextStyle actionButtonTextStyle =
     TextStyle(fontSize: 20.0, color: primaryColor);
-TextStyle accountTextStyle = const TextStyle(fontSize: 20.0, color: Colors.white);
+TextStyle accountTextStyle =
+    const TextStyle(fontSize: 20.0, color: Colors.white);
 // Decorations
 
 InputDecoration emailInputDecoration = InputDecoration(

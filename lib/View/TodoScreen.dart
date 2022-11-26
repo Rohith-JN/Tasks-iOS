@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:tasks/controllers/arrayController.dart';
 import 'package:tasks/controllers/authController.dart';
@@ -150,89 +151,74 @@ class _TodoScreenState extends State<TodoScreen> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text((widget.todoIndex == null) ? 'New Task' : 'Edit Task',
-            style: menuTextStyle),
-        leadingWidth: (MediaQuery.of(context).size.width < 768) ? 90.0 : 100.0,
-        leading: Center(
-          child: Padding(
-            padding: (MediaQuery.of(context).size.width < 768)
-                ? const EdgeInsets.only(left: 0)
-                : const EdgeInsets.only(left: 21.0),
-            child: TextButton(
-              style: const ButtonStyle(
-                splashFactory: NoSplash.splashFactory,
-              ),
-              onPressed: () {
-                Get.back();
-              },
-              child: Text(
-                "Cancel",
-                style: paragraphPrimary,
-              ),
-            ),
+      appBar: CupertinoNavigationBar(
+        backgroundColor: Colors.black,
+        padding: EdgeInsetsDirectional.zero,
+        leading: TextButton(
+          style: const ButtonStyle(
+            splashFactory: NoSplash.splashFactory,
+          ),
+          onPressed: () {
+            Get.back();
+          },
+          child: Text(
+            "Cancel",
+            style: actionButtonTextStyle,
           ),
         ),
-        centerTitle: true,
-        actions: [
-          Center(
-            child: Padding(
-              padding: (MediaQuery.of(context).size.width < 768)
-                  ? const EdgeInsets.only(left: 0)
-                  : const EdgeInsets.only(right: 21.0),
-              child: TextButton(
-                style: const ButtonStyle(
-                  splashFactory: NoSplash.splashFactory,
-                ),
-                onPressed: () async {
-                  if (widget.todoIndex == null &&
-                      formKey.currentState!.validate()) {
-                    var finalId = UniqueKey().hashCode;
-                    arrayController.arrays[widget.arrayIndex!].todos!.add(Todo(
-                        title: titleEditingController.text,
-                        details: detailEditingController.text,
-                        id: finalId,
-                        date: _dateController.text,
-                        time: _timeController.text,
-                        dateAndTimeEnabled: (_dateController.text != '' &&
-                                _timeController.text != '')
-                            ? true
-                            : false,
-                        done: false,
-                        dateCreated: Timestamp.now()));
-                    await FirebaseFirestore.instance
-                        .collection("users")
-                        .doc(uid)
-                        .collection("arrays")
-                        .doc(arrayController.arrays[widget.arrayIndex!].id)
-                        .set({
-                      "title": arrayController.arrays[widget.arrayIndex!].title,
-                      "dateCreated": arrayController
-                          .arrays[widget.arrayIndex!].dateCreated,
-                      "todos": arrayController.arrays[widget.arrayIndex!].todos!
-                          .map((todo) => todo.toJson())
-                          .toList()
-                    });
-                    Database().addAllTodo(
-                        uid,
-                        finalId,
-                        arrayController.arrays[widget.arrayIndex!].title!,
-                        titleEditingController.text,
-                        detailEditingController.text,
-                        Timestamp.now(),
-                        _dateController.text,
-                        _timeController.text,
-                        false,
-                        (_dateController.text != '' &&
-                                _timeController.text != '')
-                            ? true
-                            : false,
-                        finalId);
-                    Get.back();
-                    HapticFeedback.heavyImpact();
-                    if (_dateController.text.isNotEmpty &&
-                        _timeController.text.isNotEmpty) {
-                      /*
+        middle: Text((widget.todoIndex == null) ? 'New Task' : 'Edit Task',
+            style: menuTextStyle),
+        trailing: TextButton(
+          style: const ButtonStyle(
+            splashFactory: NoSplash.splashFactory,
+          ),
+          onPressed: () async {
+            if (widget.todoIndex == null && formKey.currentState!.validate()) {
+              var finalId = UniqueKey().hashCode;
+              arrayController.arrays[widget.arrayIndex!].todos!.add(Todo(
+                  title: titleEditingController.text,
+                  details: detailEditingController.text,
+                  id: finalId,
+                  date: _dateController.text,
+                  time: _timeController.text,
+                  dateAndTimeEnabled:
+                      (_dateController.text != '' && _timeController.text != '')
+                          ? true
+                          : false,
+                  done: false,
+                  dateCreated: Timestamp.now()));
+              await FirebaseFirestore.instance
+                  .collection("users")
+                  .doc(uid)
+                  .collection("arrays")
+                  .doc(arrayController.arrays[widget.arrayIndex!].id)
+                  .set({
+                "title": arrayController.arrays[widget.arrayIndex!].title,
+                "dateCreated":
+                    arrayController.arrays[widget.arrayIndex!].dateCreated,
+                "todos": arrayController.arrays[widget.arrayIndex!].todos!
+                    .map((todo) => todo.toJson())
+                    .toList()
+              });
+              Database().addAllTodo(
+                  uid,
+                  finalId,
+                  arrayController.arrays[widget.arrayIndex!].title!,
+                  titleEditingController.text,
+                  detailEditingController.text,
+                  Timestamp.now(),
+                  _dateController.text,
+                  _timeController.text,
+                  false,
+                  (_dateController.text != '' && _timeController.text != '')
+                      ? true
+                      : false,
+                  finalId);
+              Get.back();
+              HapticFeedback.heavyImpact();
+              if (_dateController.text.isNotEmpty &&
+                  _timeController.text.isNotEmpty) {
+                /*
                       NotificationService().showNotification(
                           finalId,
                           'Reminder',
@@ -240,59 +226,56 @@ class _TodoScreenState extends State<TodoScreen> {
                           Functions.parse(
                               _dateController.text, _timeController.text));
                       */
-                    }
-                  }
-                  if (widget.todoIndex != null &&
-                      formKey.currentState!.validate()) {
-                    var editing = arrayController
-                        .arrays[widget.arrayIndex!].todos![widget.todoIndex!];
-                    editing.title = titleEditingController.text;
-                    editing.details = detailEditingController.text;
-                    editing.date = _dateController.text;
-                    editing.time = _timeController.text;
-                    editing.done = done;
-                    editing.dateAndTimeEnabled =
-                        (titleEditingController.text != '' &&
-                                detailEditingController.text != '')
-                            ? true
-                            : false;
-                    arrayController.arrays[widget.arrayIndex!]
-                        .todos![widget.todoIndex!] = editing;
-                    await FirebaseFirestore.instance
-                        .collection("users")
-                        .doc(uid)
-                        .collection("arrays")
-                        .doc(arrayController.arrays[widget.arrayIndex!].id)
-                        .set({
-                      "title": arrayController.arrays[widget.arrayIndex!].title,
-                      "dateCreated": arrayController
-                          .arrays[widget.arrayIndex!].dateCreated,
-                      "todos": arrayController.arrays[widget.arrayIndex!].todos!
-                          .map((todo) => todo.toJson())
-                          .toList()
-                    });
-                    Database().updateAllTodo(
-                        uid,
-                        arrayController.arrays[widget.arrayIndex!]
-                            .todos![widget.todoIndex!].id!, // get doc id
-                        arrayController.arrays[widget.arrayIndex!].title!,
-                        titleEditingController.text,
-                        detailEditingController.text,
-                        Timestamp.now(),
-                        _dateController.text,
-                        _timeController.text,
-                        done,
-                        (_dateController.text != '' &&
-                                _timeController.text != '')
-                            ? true
-                            : false,
-                        arrayController.arrays[widget.arrayIndex!]
-                            .todos![widget.todoIndex!].id!);
-                    Get.back();
-                    HapticFeedback.heavyImpact();
-                    if (_dateController.text.isNotEmpty &&
-                        _timeController.text.isNotEmpty) {
-                          /*
+              }
+            }
+            if (widget.todoIndex != null && formKey.currentState!.validate()) {
+              var editing = arrayController
+                  .arrays[widget.arrayIndex!].todos![widget.todoIndex!];
+              editing.title = titleEditingController.text;
+              editing.details = detailEditingController.text;
+              editing.date = _dateController.text;
+              editing.time = _timeController.text;
+              editing.done = done;
+              editing.dateAndTimeEnabled = (titleEditingController.text != '' &&
+                      detailEditingController.text != '')
+                  ? true
+                  : false;
+              arrayController.arrays[widget.arrayIndex!]
+                  .todos![widget.todoIndex!] = editing;
+              await FirebaseFirestore.instance
+                  .collection("users")
+                  .doc(uid)
+                  .collection("arrays")
+                  .doc(arrayController.arrays[widget.arrayIndex!].id)
+                  .set({
+                "title": arrayController.arrays[widget.arrayIndex!].title,
+                "dateCreated":
+                    arrayController.arrays[widget.arrayIndex!].dateCreated,
+                "todos": arrayController.arrays[widget.arrayIndex!].todos!
+                    .map((todo) => todo.toJson())
+                    .toList()
+              });
+              Database().updateAllTodo(
+                  uid,
+                  arrayController.arrays[widget.arrayIndex!]
+                      .todos![widget.todoIndex!].id!, // get doc id
+                  arrayController.arrays[widget.arrayIndex!].title!,
+                  titleEditingController.text,
+                  detailEditingController.text,
+                  Timestamp.now(),
+                  _dateController.text,
+                  _timeController.text,
+                  done,
+                  (_dateController.text != '' && _timeController.text != '')
+                      ? true
+                      : false,
+                  arrayController.arrays[widget.arrayIndex!]
+                      .todos![widget.todoIndex!].id!);
+              Get.back();
+              HapticFeedback.heavyImpact();
+              if (_dateController.text.isNotEmpty &&
+                  _timeController.text.isNotEmpty) {
+                /*
                       NotificationService().showNotification(
                           arrayController.arrays[widget.arrayIndex!]
                               .todos![widget.todoIndex!].id!,
@@ -301,22 +284,19 @@ class _TodoScreenState extends State<TodoScreen> {
                           Functions.parse(
                               _dateController.text, _timeController.text));
                           */
-                    } else {
-                      /*
+              } else {
+                /*
                       NotificationService()
                           .flutterLocalNotificationsPlugin
                           .cancel(arrayController.arrays[widget.arrayIndex!]
                               .todos![widget.todoIndex!].id!);
                       */
-                    }
-                  }
-                },
-                child: Text((widget.todoIndex == null) ? 'Add' : 'Update',
-                    style: paragraphPrimary),
-              ),
-            ),
-          )
-        ],
+              }
+            }
+          },
+          child: Text((widget.todoIndex == null) ? 'Add' : 'Update',
+              style: paragraphPrimary),
+        ),
       ),
       body: SafeArea(
         child: GestureDetector(
@@ -484,3 +464,32 @@ class _TodoScreenState extends State<TodoScreen> {
     );
   }
 }
+
+/*
+AppBar(
+        title: Text((widget.todoIndex == null) ? 'New Task' : 'Edit Task',
+            style: menuTextStyle),
+        leading: TextButton(
+          style: const ButtonStyle(
+            splashFactory: NoSplash.splashFactory,
+          ),
+          onPressed: () {
+            Get.back();
+          },
+          child: Text(
+            "Cancel",
+            style: paragraphPrimary,
+          ),
+        ),
+        actions: [
+          Center(
+            child: Padding(
+              padding: (MediaQuery.of(context).size.width < 768)
+                  ? const EdgeInsets.only(left: 0)
+                  : const EdgeInsets.only(right: 21.0),
+              child: 
+            ),
+          )
+        ],
+      ),
+*/

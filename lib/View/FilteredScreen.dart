@@ -1,5 +1,6 @@
 // ignore_for_file: file_names, empty_statements
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -38,9 +39,13 @@ class _FilteredScreenState extends State<FilteredScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          centerTitle: false,
-          title: Text(widget.title, style: appBarTextStyle),
+        appBar: CupertinoNavigationBar(
+          backgroundColor: Colors.black,
+          padding: EdgeInsetsDirectional.zero,
+          leading: CupertinoNavigationBarBackButton(
+            onPressed: () => Get.back(),
+          ),
+          middle: Text(widget.title, style: appBarTextStyle),
         ),
         extendBodyBehindAppBar: true,
         body: Obx(() => Container(

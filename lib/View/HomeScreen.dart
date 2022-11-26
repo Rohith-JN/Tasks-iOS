@@ -1,5 +1,6 @@
 // ignore_for_file: file_names, empty_statements
 
+import 'package:flutter/cupertino.dart';
 import 'package:tasks/controllers/arrayController.dart';
 import 'package:tasks/controllers/authController.dart';
 import 'package:tasks/services/functions.services.dart';
@@ -27,10 +28,28 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          centerTitle: false,
-          title: Text(arrayController.arrays[widget.index!].title!,
-              style: appBarTextStyle),
+        appBar: CupertinoNavigationBar(
+          padding: EdgeInsetsDirectional.zero,
+          backgroundColor: Colors.black,
+          leading: CupertinoNavigationBarBackButton(
+            onPressed: () => Get.back(),
+          ),
+          middle: Text(
+            arrayController.arrays[widget.index!].title!,
+            style: appBarTextStyle,
+          ),
+          trailing: CupertinoButton(
+            padding: EdgeInsetsDirectional.zero,
+            child: const Icon(
+              CupertinoIcons.plus,
+              size: 30.0,
+            ),
+            onPressed: () {
+              Navigator.of(context).push(Routes.route(
+                  TodoScreen(arrayIndex: widget.index),
+                  const Offset(0.0, 1.0)));
+            },
+          ),
         ),
         extendBodyBehindAppBar: true,
         body: Obx(() => Container(
