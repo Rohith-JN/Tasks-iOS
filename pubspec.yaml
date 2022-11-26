@@ -45,6 +45,8 @@ dependencies:
   date_format: ^2.0.7
   flutter_colorpicker: ^1.0.3
   timezone: ^0.9.0
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:
