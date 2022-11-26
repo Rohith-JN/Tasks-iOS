@@ -1,14 +1,12 @@
 // ignore_for_file: file_names
 
 import 'dart:async';
-import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:tasks/controllers/arrayController.dart';
 import 'package:tasks/controllers/authController.dart';
 import 'package:tasks/models/Todo.dart';
-import 'package:tasks/services/functions.services.dart';
 import 'package:tasks/services/notification.service.dart';
 import 'package:tasks/services/database.service.dart';
 import 'package:tasks/utils/global.dart';
@@ -41,7 +39,6 @@ class _TodoScreenState extends State<TodoScreen> {
   late TextEditingController titleEditingController;
   late TextEditingController detailEditingController;
 
-  late String _setTime, _setDate;
   late String _hour, _minute, _time;
   late String dateTime;
   late bool done;
@@ -86,40 +83,68 @@ class _TodoScreenState extends State<TodoScreen> {
     _dateController.dispose();
   }
 
+  Future<void> _showDialog(Widget child) async {
+    await showCupertinoModalPopup<void>(
+        context: context,
+        builder: (BuildContext context) => Container(
+              height: 250,
+              padding: const EdgeInsets.only(top: 6.0),
+              margin: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              color: CupertinoColors.systemBackground.resolveFrom(context),
+              child: SafeArea(
+                top: false,
+                child: child,
+              ),
+            ));
+  }
+
   DateTime selectedDate = DateTime.now();
-  TimeOfDay selectedTime = TimeOfDay(
-      hour: (TimeOfDay.now().minute > 55)
-          ? TimeOfDay.now().hour + 1
-          : TimeOfDay.now().hour,
-      minute: (TimeOfDay.now().minute > 55) ? 0 : TimeOfDay.now().minute + 5);
+  DateTime selectedTime = DateTime(
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+      (DateTime.now().minute > 55)
+          ? DateTime.now().hour + 1
+          : DateTime.now().hour,
+      (DateTime.now().minute > 55) ? 0 : DateTime.now().minute + 5);
 
-  Future<DateTime?> _selectDate() => showDatePicker(
-      builder: (context, child) {
-        return datePickerTheme(child);
-      },
-      initialEntryMode: DatePickerEntryMode.calendarOnly,
-      context: context,
-      initialDate: selectedDate,
-      initialDatePickerMode: DatePickerMode.day,
-      firstDate: DateTime.now(),
-      lastDate: DateTime(DateTime.now().year + 5));
+  Future<void> _selectDate() async {
+    await _showDialog(
+      CupertinoDatePicker(
+        initialDateTime: selectedDate,
+        mode: CupertinoDatePickerMode.date,
+        use24hFormat: false,
+        onDateTimeChanged: (DateTime newDate) {
+          setState(() => selectedDate = newDate);
+        },
+      ),
+    );
+  }
 
-  Future<TimeOfDay?> _selectTime() => showTimePicker(
-      builder: (context, child) {
-        return timePickerTheme(child);
-      },
-      context: context,
-      initialTime: selectedTime,
-      initialEntryMode: TimePickerEntryMode.input);
+  Future<void> _selectTime() async {
+    await _showDialog(
+      CupertinoDatePicker(
+        initialDateTime: DateTime(selectedDate.year, selectedDate.month,
+            selectedDate.day, selectedTime.hour, selectedTime.minute),
+        mode: CupertinoDatePickerMode.time,
+        use24hFormat: false,
+        onDateTimeChanged: (DateTime newTime) {
+          setState(() => selectedTime = newTime);
+        },
+      ),
+    );
+  }
 
   Future _pickDateTime() async {
-    DateTime? date = await _selectDate();
+    DateTime? date = selectedDate;
     if (date == null) return;
     if (date != null) {
       selectedDate = date;
       _dateController.text = DateFormat("MM/dd/yyyy").format(selectedDate);
     }
-    TimeOfDay? time = await _selectTime();
+    DateTime? time = selectedTime;
     if (time == null) {
       _timeController.text = formatDate(
           DateTime(
@@ -395,6 +420,8 @@ class _TodoScreenState extends State<TodoScreen> {
                 ),
                 GestureDetector(
                   onTap: () async {
+                    await _selectDate();
+                    await _selectTime();
                     await _pickDateTime();
                     setState(() {
                       visible = true;
@@ -416,9 +443,7 @@ class _TodoScreenState extends State<TodoScreen> {
                                 child: TextField(
                                   enabled: false,
                                   controller: _dateController,
-                                  onChanged: (String val) {
-                                    _setDate = val;
-                                  },
+                                  onChanged: (String val) {},
                                   decoration: InputDecoration(
                                       hintText: "Date",
                                       hintStyle: hintTextStyle,
@@ -442,9 +467,7 @@ class _TodoScreenState extends State<TodoScreen> {
                           ),
                           primaryDivider,
                           TextField(
-                            onChanged: (String val) {
-                              _setTime = val;
-                            },
+                            onChanged: (String val) {},
                             enabled: false,
                             controller: _timeController,
                             decoration: InputDecoration(
