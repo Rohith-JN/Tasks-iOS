@@ -464,32 +464,3 @@ class _TodoScreenState extends State<TodoScreen> {
     );
   }
 }
-
-/*
-AppBar(
-        title: Text((widget.todoIndex == null) ? 'New Task' : 'Edit Task',
-            style: menuTextStyle),
-        leading: TextButton(
-          style: const ButtonStyle(
-            splashFactory: NoSplash.splashFactory,
-          ),
-          onPressed: () {
-            Get.back();
-          },
-          child: Text(
-            "Cancel",
-            style: paragraphPrimary,
-          ),
-        ),
-        actions: [
-          Center(
-            child: Padding(
-              padding: (MediaQuery.of(context).size.width < 768)
-                  ? const EdgeInsets.only(left: 0)
-                  : const EdgeInsets.only(right: 21.0),
-              child: 
-            ),
-          )
-        ],
-      ),
-*/

@@ -86,34 +86,29 @@ class _MainScreenState extends State<MainScreen> {
                           ),
                           onTap: () async {
                             Navigator.pop(context);
-                            await showDialog<String>(
-                              barrierDismissible: true,
+                            showCupertinoModalPopup<void>(
                               context: context,
-                              builder: (BuildContext context) => AlertDialog(
-                                backgroundColor:
-                                    const Color.fromARGB(255, 37, 37, 37),
-                                title: const Text('Delete account',
-                                    style: TextStyle(color: Colors.white)),
+                              builder: (BuildContext context) =>
+                                  CupertinoAlertDialog(
+                                insetAnimationDuration: const Duration(seconds: 1),
+                                title: const Text('Delete account'),
                                 content: const Text(
-                                    'Are you sure you want to delete your account?',
-                                    style: TextStyle(
-                                        color: Color.fromARGB(
-                                            255, 187, 187, 187))),
-                                actions: <Widget>[
-                                  TextButton(
+                                    'Are you sure you want to delete your account?'),
+                                actions: <CupertinoDialogAction>[
+                                  CupertinoDialogAction(
+                                    isDefaultAction: true,
                                     onPressed: () {
-                                      Navigator.pop(context, 'Cancel');
+                                      Navigator.pop(context);
                                     },
-                                    child: Text('Cancel',
-                                        style: TextStyle(color: primaryColor)),
+                                    child: const Text('No'),
                                   ),
-                                  TextButton(
-                                    onPressed: () async {
-                                      Navigator.pop(context, 'Ok');
+                                  CupertinoDialogAction(
+                                    isDestructiveAction: true,
+                                    onPressed: () {
+                                      Navigator.pop(context);
                                       Get.to(const DeleteScreen());
                                     },
-                                    child: Text('OK',
-                                        style: TextStyle(color: primaryColor)),
+                                    child: const Text('Yes'),
                                   ),
                                 ],
                               ),
@@ -539,118 +534,3 @@ class CustomSearchDelegate extends SearchDelegate {
     }
   }
 }
-
-/*
-AppBar(
-          actions: [
-            
-            Padding(
-              padding: (MediaQuery.of(context).size.width < 768)
-                  ? const EdgeInsets.only(right: 0.0)
-                  : EdgeInsets.only(right: 25.0),
-              child: IconButton(
-                  onPressed: () {
-                    showModalBottomSheet<void>(
-                      backgroundColor: tertiaryColor,
-                      context: context,
-                      builder: (BuildContext context) {
-                        return Container(
-                          padding: const EdgeInsets.only(top: 15.0),
-                          height: 280,
-                          child: ListView(children: [
-                            const SizedBox(height: 10.0),
-                            Center(
-                              child: Icon(
-                                Icons.account_circle,
-                                size: 40.0,
-                                color: primaryColor,
-                              ),
-                            ),
-                            const SizedBox(height: 15.0),
-                            Center(
-                                child: Text(
-                              authController.user!.email ?? '',
-                              style: accountTextStyle,
-                            )),
-                            const SizedBox(height: 15.0),
-                            primaryDivider,
-                            ListTile(
-                              title: Text(
-                                "Sign out",
-                                style: optionsTextStyle,
-                              ),
-                              leading: Icon(
-                                Icons.logout,
-                                color: primaryColor,
-                              ),
-                              onTap: () {
-                                Navigator.pop(context);
-                                authController.signOut(context);
-                              },
-                            ),
-                            ListTile(
-                              title: Text(
-                                "Delete account",
-                                style: optionsTextStyle,
-                              ),
-                              leading: Icon(
-                                Icons.delete,
-                                color: primaryColor,
-                              ),
-                              onTap: () async {
-                                Navigator.pop(context);
-                                await showDialog<String>(
-                                  barrierDismissible: true,
-                                  context: context,
-                                  builder: (BuildContext context) =>
-                                      AlertDialog(
-                                    backgroundColor:
-                                        const Color.fromARGB(255, 37, 37, 37),
-                                    title: const Text('Delete account',
-                                        style: TextStyle(color: Colors.white)),
-                                    content: const Text(
-                                        'Are you sure you want to delete your account?',
-                                        style: TextStyle(
-                                            color: Color.fromARGB(
-                                                255, 187, 187, 187))),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context, 'Cancel');
-                                        },
-                                        child: Text('Cancel',
-                                            style:
-                                                TextStyle(color: primaryColor)),
-                                      ),
-                                      TextButton(
-                                        onPressed: () async {
-                                          Navigator.pop(context, 'Ok');
-                                          Get.to(const DeleteScreen());
-                                        },
-                                        child: Text('OK',
-                                            style:
-                                                TextStyle(color: primaryColor)),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
-                          ]),
-                        );
-                      },
-                    );
-                  },
-                  icon: primaryIcon(Icons.menu)),
-            ),
-            CupertinoButton(
-              padding: EdgeInsetsDirectional.zero,
-              child: primaryIcon(CupertinoIcons.plus),
-              onPressed: () {
-                Navigator.of(context).push(
-                    Routes.route(const ArrayScreen(), const Offset(0.0, 1.0)));
-              },
-            ),
-          ],
-        ),
-*/
