@@ -8,13 +8,6 @@
 
 <h4 align="center">A minimal todo app made using <a href="https://flutter.dev" target="_blank">Flutter</a>.</h4>
 
-## Screenshots
-
-||||
-|--|--|--|
-| ![login](./Preview/LoginScreen.png) | ![add_task](./Preview/TodoScreen.png) |![home](./Preview/MainScreen.png) |
-| ![task](./Preview/HomeScreen.png) | ![filtered](./Preview/FilterScreen.png) |![theme](./Preview/ThemeScreen.png) |
-
 ## Key Features
 
 * Multi-list Todo app
@@ -24,28 +17,6 @@
 * Tasks can be scheduled at a specific date and time
 * Multi-color theme
 * Minimal and clean
-* Test
-
-# Command
-### Install dependencies
-
-```sh
-flutter pub get
-```
-
-### Run application
-
-```sh
-flutter emulators --launch <emulator_name>
-flutter run
-```
-
-### Build
-
-```sh
-flutter build apk
-```
-
 
 # Tech Stack
 
