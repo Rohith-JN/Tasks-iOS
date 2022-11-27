@@ -31,317 +31,326 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      child: NestedScrollView(
-        headerSliverBuilder: ((context, innerBoxIsScrolled) => [
-              SliverOverlapAbsorber(
-                handle:
-                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                sliver: CupertinoSliverNavigationBar(
-                  brightness: Brightness.dark,
-                  padding: EdgeInsetsDirectional.zero,
-                  largeTitle: Text(
-                    'Tasks',
-                    style: appBarTextStyle,
-                  ),
-                  trailing: CupertinoButton(
-                      onPressed: () {
-                        showSearch(
-                            context: context, delegate: CustomSearchDelegate());
-                      },
-                      child: primaryIcon(Icons.search)),
-                  leading: CupertinoButton(
-                      onPressed: () {
-                        showModalBottomSheet<void>(
-                          backgroundColor: tertiaryColor,
-                          context: context,
-                          builder: (BuildContext context) {
-                            return Container(
-                              padding: const EdgeInsets.only(top: 15.0),
-                              height: 280,
-                              child: ListView(children: [
-                                const SizedBox(height: 10.0),
-                                Center(
-                                  child: Icon(
-                                    Icons.account_circle,
-                                    size: 40.0,
-                                    color: primaryColor,
-                                  ),
+      child: CustomScrollView(
+        slivers: [
+          CupertinoSliverNavigationBar(
+            brightness: Brightness.dark,
+            padding: EdgeInsetsDirectional.zero,
+            largeTitle: Text(
+              'Tasks',
+              style: appBarTextStyle,
+            ),
+            trailing: CupertinoButton(
+                onPressed: () {
+                  showSearch(
+                      context: context, delegate: CustomSearchDelegate());
+                },
+                child: primaryIcon(Icons.search)),
+            leading: CupertinoButton(
+                onPressed: () {
+                  showModalBottomSheet<void>(
+                    backgroundColor: tertiaryColor,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Container(
+                        padding: const EdgeInsets.only(top: 15.0),
+                        height: 280,
+                        child: ListView(children: [
+                          const SizedBox(height: 10.0),
+                          Center(
+                            child: Icon(
+                              Icons.account_circle,
+                              size: 40.0,
+                              color: primaryColor,
+                            ),
+                          ),
+                          const SizedBox(height: 15.0),
+                          Center(
+                              child: Text(
+                            authController.user!.email ?? '',
+                            style: accountTextStyle,
+                          )),
+                          const SizedBox(height: 15.0),
+                          primaryDivider,
+                          ListTile(
+                            title: Text(
+                              "Sign out",
+                              style: optionsTextStyle,
+                            ),
+                            leading: Icon(
+                              Icons.logout,
+                              color: primaryColor,
+                            ),
+                            onTap: () {
+                              Navigator.pop(context);
+                              authController.signOut(context);
+                            },
+                          ),
+                          ListTile(
+                            title: Text(
+                              "Delete account",
+                              style: optionsTextStyle,
+                            ),
+                            leading: Icon(
+                              Icons.delete,
+                              color: primaryColor,
+                            ),
+                            onTap: () async {
+                              Navigator.pop(context);
+                              showCupertinoModalPopup<void>(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                    CupertinoAlertDialog(
+                                  insetAnimationDuration:
+                                      const Duration(seconds: 1),
+                                  title: const Text('Delete account'),
+                                  content: const Text(
+                                      'Are you sure you want to delete your account?'),
+                                  actions: <CupertinoDialogAction>[
+                                    CupertinoDialogAction(
+                                      isDefaultAction: true,
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('No'),
+                                    ),
+                                    CupertinoDialogAction(
+                                      isDestructiveAction: true,
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        Get.to(const DeleteScreen());
+                                      },
+                                      child: const Text('Yes'),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(height: 15.0),
-                                Center(
-                                    child: Text(
-                                  authController.user!.email ?? '',
-                                  style: accountTextStyle,
-                                )),
-                                const SizedBox(height: 15.0),
-                                primaryDivider,
-                                ListTile(
-                                  title: Text(
-                                    "Sign out",
-                                    style: optionsTextStyle,
-                                  ),
-                                  leading: Icon(
-                                    Icons.logout,
-                                    color: primaryColor,
-                                  ),
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                    authController.signOut(context);
-                                  },
-                                ),
-                                ListTile(
-                                  title: Text(
-                                    "Delete account",
-                                    style: optionsTextStyle,
-                                  ),
-                                  leading: Icon(
-                                    Icons.delete,
-                                    color: primaryColor,
-                                  ),
-                                  onTap: () async {
-                                    Navigator.pop(context);
-                                    showCupertinoModalPopup<void>(
-                                      context: context,
-                                      builder: (BuildContext context) =>
-                                          CupertinoAlertDialog(
-                                        insetAnimationDuration:
-                                            const Duration(seconds: 1),
-                                        title: const Text('Delete account'),
-                                        content: const Text(
-                                            'Are you sure you want to delete your account?'),
-                                        actions: <CupertinoDialogAction>[
-                                          CupertinoDialogAction(
-                                            isDefaultAction: true,
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Text('No'),
-                                          ),
-                                          CupertinoDialogAction(
-                                            isDestructiveAction: true,
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                              Get.to(const DeleteScreen());
-                                            },
-                                            child: const Text('Yes'),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ]),
-                            );
-                          },
-                        );
-                      },
-                      child: primaryIcon(Icons.menu)),
-                ),
-              )
-            ]),
-        body: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Container(
-              width: double.infinity,
-              padding: (MediaQuery.of(context).size.width < 768)
-                  ? const EdgeInsets.symmetric(horizontal: 15.0, vertical: 15.0)
-                  : const EdgeInsets.symmetric(
-                      horizontal: 35.0, vertical: 15.0),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      filteredWidget(context, 'Scheduled', 'No scheduled tasks',
-                          arrayController.scheduledTodos, Icons.schedule),
-                      filteredWidget(
-                          context,
-                          'Today',
-                          'Schedule a task for today',
-                          arrayController.todayTodos,
-                          Icons.calendar_today),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20.0,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      filteredWidget(context, 'Completed', 'No completed tasks',
-                          arrayController.doneTodos, Icons.done_rounded),
-                      filteredWidget(context, 'All', 'No tasks yet',
-                          arrayController.allTodos, Icons.task)
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 30.0,
-                  ),
-                  Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text("Lists", style: appBarTextStyle)),
-                  Column(
-                    children: [
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.37,
-                        child: GetX<ArrayController>(
-                            init: Get.put<ArrayController>(ArrayController()),
-                            builder: (ArrayController arrayController) {
-                              return (arrayController.arrays.isEmpty)
-                                  ? Container(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.37,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          const Center(
-                                            child: Icon(Icons.list,
-                                                color: Colors.white,
-                                                size: 80.0),
-                                          ),
-                                          const SizedBox(
-                                            height: 5.0,
-                                          ),
-                                          Center(
-                                            child: Text(
-                                              "Add new lists",
-                                              style: buttonTextStyleWhite,
+                              );
+                            },
+                          ),
+                        ]),
+                      );
+                    },
+                  );
+                },
+                child: primaryIcon(Icons.menu)),
+          ),
+          SliverFillRemaining(
+            child: Container(
+                width: double.infinity,
+                padding: (MediaQuery.of(context).size.width < 768)
+                    ? const EdgeInsets.symmetric(
+                        horizontal: 15.0, vertical: 15.0)
+                    : const EdgeInsets.symmetric(
+                        horizontal: 35.0, vertical: 15.0),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        filteredWidget(
+                            context,
+                            'Scheduled',
+                            'No scheduled tasks',
+                            arrayController.scheduledTodos,
+                            Icons.schedule),
+                        filteredWidget(
+                            context,
+                            'Today',
+                            'Schedule a task for today',
+                            arrayController.todayTodos,
+                            Icons.calendar_today),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20.0,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        filteredWidget(
+                            context,
+                            'Completed',
+                            'No completed tasks',
+                            arrayController.doneTodos,
+                            Icons.done_rounded),
+                        filteredWidget(context, 'All', 'No tasks yet',
+                            arrayController.allTodos, Icons.task)
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 30.0,
+                    ),
+                    Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text("Lists", style: appBarTextStyle)),
+                    Column(
+                      children: [
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.37,
+                          child: GetX<ArrayController>(
+                              init: Get.put<ArrayController>(ArrayController()),
+                              builder: (ArrayController arrayController) {
+                                return (arrayController.arrays.isEmpty)
+                                    ? Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.37,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            const Center(
+                                              child: Icon(Icons.list,
+                                                  color: Colors.white,
+                                                  size: 80.0),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  : Padding(
-                                      padding: const EdgeInsets.only(top: 30.0),
-                                      child: ListView.separated(
-                                          shrinkWrap: true,
-                                          physics:
-                                              const BouncingScrollPhysics(),
-                                          itemBuilder: (context, index) =>
-                                              GestureDetector(
-                                                onLongPress: () {
-                                                  Navigator.of(context).push(
-                                                      Routes.route(
-                                                          ArrayScreen(
-                                                              index: index,
-                                                              docId:
-                                                                  arrayController
-                                                                      .arrays[
-                                                                          index]
-                                                                      .id),
-                                                          const Offset(
-                                                              0.0, 1.0)));
-                                                },
-                                                onTap: () {
-                                                  Navigator.of(context).push(
-                                                      Routes.route(
-                                                          HomeScreen(
-                                                              index: index),
-                                                          const Offset(
-                                                              1.0, 0.0)));
-                                                },
-                                                child: Dismissible(
-                                                  key: UniqueKey(),
-                                                  direction: DismissDirection
-                                                      .startToEnd,
-                                                  onDismissed: (_) {
-                                                    HapticFeedback
-                                                        .heavyImpact();
-                                                    Functions.deleteArray(uid,
-                                                        arrayController, index);
+                                            const SizedBox(
+                                              height: 5.0,
+                                            ),
+                                            Center(
+                                              child: Text(
+                                                "Add new lists",
+                                                style: buttonTextStyleWhite,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    : Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 30.0),
+                                        child: ListView.separated(
+                                            shrinkWrap: true,
+                                            physics:
+                                                const BouncingScrollPhysics(),
+                                            itemBuilder: (context, index) =>
+                                                GestureDetector(
+                                                  onLongPress: () {
+                                                    Navigator.of(context).push(
+                                                        Routes.route(
+                                                            ArrayScreen(
+                                                                index: index,
+                                                                docId:
+                                                                    arrayController
+                                                                        .arrays[
+                                                                            index]
+                                                                        .id),
+                                                            const Offset(
+                                                                0.0, 1.0)));
                                                   },
-                                                  child: Container(
-                                                    width: double.infinity,
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height *
-                                                            0.07,
-                                                    decoration: BoxDecoration(
-                                                        color: tertiaryColor,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                                    14.0)),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              right: 25.0),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    left: 20.0),
-                                                            child: Text(
-                                                              arrayController
-                                                                      .arrays[
-                                                                          index]
-                                                                      .title ??
-                                                                  '',
-                                                              style: GoogleFonts
-                                                                  .notoSans(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontSize:
-                                                                          25.0),
+                                                  onTap: () {
+                                                    Navigator.of(context).push(
+                                                        Routes.route(
+                                                            HomeScreen(
+                                                                index: index),
+                                                            const Offset(
+                                                                1.0, 0.0)));
+                                                  },
+                                                  child: Dismissible(
+                                                    key: UniqueKey(),
+                                                    direction: DismissDirection
+                                                        .startToEnd,
+                                                    onDismissed: (_) {
+                                                      HapticFeedback
+                                                          .heavyImpact();
+                                                      Functions.deleteArray(
+                                                          uid,
+                                                          arrayController,
+                                                          index);
+                                                    },
+                                                    child: Container(
+                                                      width: double.infinity,
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              0.07,
+                                                      decoration: BoxDecoration(
+                                                          color: tertiaryColor,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      14.0)),
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                right: 25.0),
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left:
+                                                                          20.0),
+                                                              child: Text(
+                                                                arrayController
+                                                                        .arrays[
+                                                                            index]
+                                                                        .title ??
+                                                                    '',
+                                                                style: GoogleFonts.notoSans(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        25.0),
+                                                              ),
                                                             ),
-                                                          ),
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    left: 10.0),
-                                                            child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .spaceBetween,
-                                                              children: [
-                                                                Text(
-                                                                  '${arrayController.arrays[index].todos!.length}',
-                                                                  style: GoogleFonts.notoSans(
-                                                                      color:
-                                                                          primaryColor,
-                                                                      fontSize:
-                                                                          27.0),
-                                                                ),
-                                                                Icon(
-                                                                  Icons
-                                                                      .arrow_forward_ios,
-                                                                  color:
-                                                                      primaryColor,
-                                                                )
-                                                              ],
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left:
+                                                                          10.0),
+                                                              child: Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
+                                                                children: [
+                                                                  Text(
+                                                                    '${arrayController.arrays[index].todos!.length}',
+                                                                    style: GoogleFonts.notoSans(
+                                                                        color:
+                                                                            primaryColor,
+                                                                        fontSize:
+                                                                            27.0),
+                                                                  ),
+                                                                  Icon(
+                                                                    Icons
+                                                                        .arrow_forward_ios,
+                                                                    color:
+                                                                        primaryColor,
+                                                                  )
+                                                                ],
+                                                              ),
                                                             ),
-                                                          ),
-                                                        ],
+                                                          ],
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
                                                 ),
-                                              ),
-                                          separatorBuilder: (_, __) =>
-                                              const SizedBox(
-                                                height: 15.0,
-                                              ),
-                                          itemCount:
-                                              arrayController.arrays.length),
-                                    );
-                            }),
-                      ),
-                    ],
-                  )
-                ],
-              )),
-        ),
+                                            separatorBuilder: (_, __) =>
+                                                const SizedBox(
+                                                  height: 15.0,
+                                                ),
+                                            itemCount:
+                                                arrayController.arrays.length),
+                                      );
+                              }),
+                        ),
+                      ],
+                    )
+                  ],
+                )),
+          )
+        ],
       ),
     );
   }
@@ -544,104 +553,6 @@ class CustomSearchDelegate extends SearchDelegate {
     }
   }
 }
-
-/*
-CupertinoNavigationBar(
-          padding: EdgeInsetsDirectional.zero,
-          backgroundColor: Colors.black,
-          leading: CupertinoButton(
-              onPressed: () {
-                showModalBottomSheet<void>(
-                  backgroundColor: tertiaryColor,
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Container(
-                      padding: const EdgeInsets.only(top: 15.0),
-                      height: 280,
-                      child: ListView(children: [
-                        const SizedBox(height: 10.0),
-                        Center(
-                          child: Icon(
-                            Icons.account_circle,
-                            size: 40.0,
-                            color: primaryColor,
-                          ),
-                        ),
-                        const SizedBox(height: 15.0),
-                        Center(
-                            child: Text(
-                          authController.user!.email ?? '',
-                          style: accountTextStyle,
-                        )),
-                        const SizedBox(height: 15.0),
-                        primaryDivider,
-                        ListTile(
-                          title: Text(
-                            "Sign out",
-                            style: optionsTextStyle,
-                          ),
-                          leading: Icon(
-                            Icons.logout,
-                            color: primaryColor,
-                          ),
-                          onTap: () {
-                            Navigator.pop(context);
-                            authController.signOut(context);
-                          },
-                        ),
-                        ListTile(
-                          title: Text(
-                            "Delete account",
-                            style: optionsTextStyle,
-                          ),
-                          leading: Icon(
-                            Icons.delete,
-                            color: primaryColor,
-                          ),
-                          onTap: () async {
-                            Navigator.pop(context);
-                            showCupertinoModalPopup<void>(
-                              context: context,
-                              builder: (BuildContext context) =>
-                                  CupertinoAlertDialog(
-                                insetAnimationDuration: const Duration(seconds: 1),
-                                title: const Text('Delete account'),
-                                content: const Text(
-                                    'Are you sure you want to delete your account?'),
-                                actions: <CupertinoDialogAction>[
-                                  CupertinoDialogAction(
-                                    isDefaultAction: true,
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text('No'),
-                                  ),
-                                  CupertinoDialogAction(
-                                    isDestructiveAction: true,
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                      Get.to(const DeleteScreen());
-                                    },
-                                    child: const Text('Yes'),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ]),
-                    );
-                  },
-                );
-              },
-              child: primaryIcon(Icons.menu)),
-          trailing: CupertinoButton(
-              onPressed: () {
-                showSearch(context: context, delegate: CustomSearchDelegate());
-              },
-              child: primaryIcon(Icons.search)),
-        ),
-*/
 
 /*
 secondaryButton(() {
