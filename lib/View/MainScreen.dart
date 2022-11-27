@@ -30,103 +30,115 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: CupertinoNavigationBar(
-          padding: EdgeInsetsDirectional.zero,
-          backgroundColor: Colors.black,
-          middle: Text("Tasks", style: appBarTextStyle),
-          leading: CupertinoButton(
-              onPressed: () {
-                showModalBottomSheet<void>(
-                  backgroundColor: tertiaryColor,
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Container(
-                      padding: const EdgeInsets.only(top: 15.0),
-                      height: 280,
-                      child: ListView(children: [
-                        const SizedBox(height: 10.0),
-                        Center(
-                          child: Icon(
-                            Icons.account_circle,
-                            size: 40.0,
-                            color: primaryColor,
-                          ),
-                        ),
-                        const SizedBox(height: 15.0),
-                        Center(
-                            child: Text(
-                          authController.user!.email ?? '',
-                          style: accountTextStyle,
-                        )),
-                        const SizedBox(height: 15.0),
-                        primaryDivider,
-                        ListTile(
-                          title: Text(
-                            "Sign out",
-                            style: optionsTextStyle,
-                          ),
-                          leading: Icon(
-                            Icons.logout,
-                            color: primaryColor,
-                          ),
-                          onTap: () {
-                            Navigator.pop(context);
-                            authController.signOut(context);
-                          },
-                        ),
-                        ListTile(
-                          title: Text(
-                            "Delete account",
-                            style: optionsTextStyle,
-                          ),
-                          leading: Icon(
-                            Icons.delete,
-                            color: primaryColor,
-                          ),
-                          onTap: () async {
-                            Navigator.pop(context);
-                            showCupertinoModalPopup<void>(
-                              context: context,
-                              builder: (BuildContext context) =>
-                                  CupertinoAlertDialog(
-                                insetAnimationDuration: const Duration(seconds: 1),
-                                title: const Text('Delete account'),
-                                content: const Text(
-                                    'Are you sure you want to delete your account?'),
-                                actions: <CupertinoDialogAction>[
-                                  CupertinoDialogAction(
-                                    isDefaultAction: true,
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text('No'),
+    return CupertinoPageScaffold(
+      child: NestedScrollView(
+        headerSliverBuilder: ((context, innerBoxIsScrolled) => [
+              SliverOverlapAbsorber(
+                handle:
+                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                sliver: CupertinoSliverNavigationBar(
+                  brightness: Brightness.dark,
+                  padding: EdgeInsetsDirectional.zero,
+                  largeTitle: Text(
+                    'Tasks',
+                    style: appBarTextStyle,
+                  ),
+                  trailing: CupertinoButton(
+                      onPressed: () {
+                        showSearch(
+                            context: context, delegate: CustomSearchDelegate());
+                      },
+                      child: primaryIcon(Icons.search)),
+                  leading: CupertinoButton(
+                      onPressed: () {
+                        showModalBottomSheet<void>(
+                          backgroundColor: tertiaryColor,
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Container(
+                              padding: const EdgeInsets.only(top: 15.0),
+                              height: 280,
+                              child: ListView(children: [
+                                const SizedBox(height: 10.0),
+                                Center(
+                                  child: Icon(
+                                    Icons.account_circle,
+                                    size: 40.0,
+                                    color: primaryColor,
                                   ),
-                                  CupertinoDialogAction(
-                                    isDestructiveAction: true,
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                      Get.to(const DeleteScreen());
-                                    },
-                                    child: const Text('Yes'),
+                                ),
+                                const SizedBox(height: 15.0),
+                                Center(
+                                    child: Text(
+                                  authController.user!.email ?? '',
+                                  style: accountTextStyle,
+                                )),
+                                const SizedBox(height: 15.0),
+                                primaryDivider,
+                                ListTile(
+                                  title: Text(
+                                    "Sign out",
+                                    style: optionsTextStyle,
                                   ),
-                                ],
-                              ),
+                                  leading: Icon(
+                                    Icons.logout,
+                                    color: primaryColor,
+                                  ),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    authController.signOut(context);
+                                  },
+                                ),
+                                ListTile(
+                                  title: Text(
+                                    "Delete account",
+                                    style: optionsTextStyle,
+                                  ),
+                                  leading: Icon(
+                                    Icons.delete,
+                                    color: primaryColor,
+                                  ),
+                                  onTap: () async {
+                                    Navigator.pop(context);
+                                    showCupertinoModalPopup<void>(
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          CupertinoAlertDialog(
+                                        insetAnimationDuration:
+                                            const Duration(seconds: 1),
+                                        title: const Text('Delete account'),
+                                        content: const Text(
+                                            'Are you sure you want to delete your account?'),
+                                        actions: <CupertinoDialogAction>[
+                                          CupertinoDialogAction(
+                                            isDefaultAction: true,
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text('No'),
+                                          ),
+                                          CupertinoDialogAction(
+                                            isDestructiveAction: true,
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                              Get.to(const DeleteScreen());
+                                            },
+                                            child: const Text('Yes'),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ]),
                             );
                           },
-                        ),
-                      ]),
-                    );
-                  },
-                );
-              },
-              child: primaryIcon(Icons.menu)),
-          trailing: CupertinoButton(
-              onPressed: () {
-                showSearch(context: context, delegate: CustomSearchDelegate());
-              },
-              child: primaryIcon(Icons.search)),
-        ),
+                        );
+                      },
+                      child: primaryIcon(Icons.menu)),
+                ),
+              )
+            ]),
         body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Container(
@@ -330,10 +342,8 @@ class _MainScreenState extends State<MainScreen> {
                 ],
               )),
         ),
-        floatingActionButton: secondaryButton(() {
-          Navigator.of(context)
-              .push(Routes.route(const ArrayScreen(), const Offset(0.0, 1.0)));
-        }, 'Add list', context));
+      ),
+    );
   }
 }
 
@@ -534,3 +544,108 @@ class CustomSearchDelegate extends SearchDelegate {
     }
   }
 }
+
+/*
+CupertinoNavigationBar(
+          padding: EdgeInsetsDirectional.zero,
+          backgroundColor: Colors.black,
+          leading: CupertinoButton(
+              onPressed: () {
+                showModalBottomSheet<void>(
+                  backgroundColor: tertiaryColor,
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Container(
+                      padding: const EdgeInsets.only(top: 15.0),
+                      height: 280,
+                      child: ListView(children: [
+                        const SizedBox(height: 10.0),
+                        Center(
+                          child: Icon(
+                            Icons.account_circle,
+                            size: 40.0,
+                            color: primaryColor,
+                          ),
+                        ),
+                        const SizedBox(height: 15.0),
+                        Center(
+                            child: Text(
+                          authController.user!.email ?? '',
+                          style: accountTextStyle,
+                        )),
+                        const SizedBox(height: 15.0),
+                        primaryDivider,
+                        ListTile(
+                          title: Text(
+                            "Sign out",
+                            style: optionsTextStyle,
+                          ),
+                          leading: Icon(
+                            Icons.logout,
+                            color: primaryColor,
+                          ),
+                          onTap: () {
+                            Navigator.pop(context);
+                            authController.signOut(context);
+                          },
+                        ),
+                        ListTile(
+                          title: Text(
+                            "Delete account",
+                            style: optionsTextStyle,
+                          ),
+                          leading: Icon(
+                            Icons.delete,
+                            color: primaryColor,
+                          ),
+                          onTap: () async {
+                            Navigator.pop(context);
+                            showCupertinoModalPopup<void>(
+                              context: context,
+                              builder: (BuildContext context) =>
+                                  CupertinoAlertDialog(
+                                insetAnimationDuration: const Duration(seconds: 1),
+                                title: const Text('Delete account'),
+                                content: const Text(
+                                    'Are you sure you want to delete your account?'),
+                                actions: <CupertinoDialogAction>[
+                                  CupertinoDialogAction(
+                                    isDefaultAction: true,
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('No'),
+                                  ),
+                                  CupertinoDialogAction(
+                                    isDestructiveAction: true,
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      Get.to(const DeleteScreen());
+                                    },
+                                    child: const Text('Yes'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ]),
+                    );
+                  },
+                );
+              },
+              child: primaryIcon(Icons.menu)),
+          trailing: CupertinoButton(
+              onPressed: () {
+                showSearch(context: context, delegate: CustomSearchDelegate());
+              },
+              child: primaryIcon(Icons.search)),
+        ),
+*/
+
+/*
+secondaryButton(() {
+          Navigator.of(context)
+              .push(Routes.route(const ArrayScreen(), const Offset(0.0, 1.0)));
+        }, 'Add list', context) 
+*/
