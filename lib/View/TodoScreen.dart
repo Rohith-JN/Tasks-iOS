@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:tasks/controllers/arrayController.dart';
 import 'package:tasks/controllers/authController.dart';
 import 'package:tasks/models/Todo.dart';
+import 'package:tasks/services/functions.services.dart';
 import 'package:tasks/services/notification.service.dart';
 import 'package:tasks/services/database.service.dart';
 import 'package:tasks/utils/global.dart';
@@ -16,6 +17,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:tasks/utils/validators.dart';
 import 'package:tasks/utils/widgets.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 final formKey = GlobalKey<FormState>();
 
@@ -243,15 +245,15 @@ class _TodoScreenState extends State<TodoScreen> {
               HapticFeedback.heavyImpact();
               if (_dateController.text.isNotEmpty &&
                   _timeController.text.isNotEmpty) {
-                /*
-                      NotificationService().showNotification(
-                          finalId,
-                          'Reminder',
-                          titleEditingController.text,
-                          Functions.parse(
-                              _dateController.text, _timeController.text));
-                      */
+                NotificationService().showNotification(
+                    finalId,
+                    'Reminder',
+                    titleEditingController.text,
+                    Functions.parse(
+                        _dateController.text, _timeController.text));
               }
+              NotificationService().showNotification(
+                  0, 'test', 'test', tz.TZDateTime.from(DateTime.now().add(Duration(seconds: 10)), tz.local));
             }
             if (widget.todoIndex != null && formKey.currentState!.validate()) {
               var editing = arrayController
@@ -300,22 +302,20 @@ class _TodoScreenState extends State<TodoScreen> {
               HapticFeedback.heavyImpact();
               if (_dateController.text.isNotEmpty &&
                   _timeController.text.isNotEmpty) {
-                /*
-                      NotificationService().showNotification(
-                          arrayController.arrays[widget.arrayIndex!]
-                              .todos![widget.todoIndex!].id!,
-                          'Reminder',
-                          titleEditingController.text,
-                          Functions.parse(
-                              _dateController.text, _timeController.text));
-                          */
+                NotificationService().flutterLocalNotificationsPlugin.cancel(
+                    arrayController.arrays[widget.arrayIndex!]
+                        .todos![widget.todoIndex!].id!);
+                NotificationService().showNotification(
+                    arrayController.arrays[widget.arrayIndex!]
+                        .todos![widget.todoIndex!].id!,
+                    'Reminder',
+                    titleEditingController.text,
+                    Functions.parse(
+                        _dateController.text, _timeController.text));
               } else {
-                /*
-                      NotificationService()
-                          .flutterLocalNotificationsPlugin
-                          .cancel(arrayController.arrays[widget.arrayIndex!]
-                              .todos![widget.todoIndex!].id!);
-                      */
+                NotificationService().flutterLocalNotificationsPlugin.cancel(
+                    arrayController.arrays[widget.arrayIndex!]
+                        .todos![widget.todoIndex!].id!);
               }
             }
           },

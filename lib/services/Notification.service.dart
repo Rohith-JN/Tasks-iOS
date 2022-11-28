@@ -1,4 +1,3 @@
-/*
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationService {
@@ -14,30 +13,31 @@ class NotificationService {
 
   NotificationService._internal();
 
-  Future<void> initNotification() async {
-    final AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@drawable/app_icon');
+  DarwinNotificationDetails iOSPlatformChannelSpecifics =
+      const DarwinNotificationDetails(presentAlert: true, presentBadge: true, presentSound: false);
 
-    final InitializationSettings initializationSettings =
-        InitializationSettings(android: initializationSettingsAndroid);
+  Future<void> initNotification() async {
+    const DarwinInitializationSettings initializationSettingsDarwin =
+        DarwinInitializationSettings(
+      requestSoundPermission: false,
+      requestBadgePermission: true,
+      requestAlertPermission: true,
+    );
+
+    const InitializationSettings initializationSettings =
+        InitializationSettings(iOS: initializationSettingsDarwin);
 
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
   Future<void> showNotification(
       int id, String? title, String? body, time) async {
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-        id,
-        title,
-        body,
-        time,
-        const NotificationDetails(
-            android: AndroidNotificationDetails(
-                'Scheduled_channel', 'Scheduled Notification',
-                importance: Importance.max, priority: Priority.max)),
+    await flutterLocalNotificationsPlugin.zonedSchedule(id, title, body, time,
+        NotificationDetails(iOS: iOSPlatformChannelSpecifics),
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
-        androidAllowWhileIdle: true);
+        androidAllowWhileIdle: false);
   }
 }
-*/
+
+// Method definition for 'setRegisterPlugins:' not found

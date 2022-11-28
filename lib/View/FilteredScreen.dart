@@ -122,14 +122,14 @@ class _FilteredScreenState extends State<FilteredScreen> {
                                               .indexOf(todo);
                                         }
                                       }
-                                      /*
+
                                       NotificationService()
                                           .flutterLocalNotificationsPlugin
                                           .cancel(arrayController
                                               .arrays[arrayIndex]
                                               .todos![todoIndex]
                                               .id!);
-                                      */
+
                                       Functions.deleteTodo(arrayController, uid,
                                           arrayIndex, todoIndex);
                                     },

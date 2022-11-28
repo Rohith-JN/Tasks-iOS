@@ -44,11 +44,10 @@ class Functions {
     for (var i = 0; i < arrayController.arrays[index].todos!.length; i++) {
       Database()
           .deleteAllTodo(uid, arrayController.arrays[index].todos![i].id!);
-      /*
+
       NotificationService()
           .flutterLocalNotificationsPlugin
           .cancel(arrayController.arrays[index].todos![i].id!);
-      */
     }
   }
 }

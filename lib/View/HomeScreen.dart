@@ -91,14 +91,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                     direction: DismissDirection.startToEnd,
                                     onDismissed: (_) async {
                                       HapticFeedback.heavyImpact();
-                                      /*
+
                                       NotificationService()
                                           .flutterLocalNotificationsPlugin
                                           .cancel(arrayController
                                               .arrays[widget.index!]
                                               .todos![index]
                                               .id!);
-                                      */
+
                                       Functions.deleteTodo(arrayController, uid,
                                           widget.index, index);
                                     },
