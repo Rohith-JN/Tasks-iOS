@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetCupertinoApp(
+    return GetMaterialApp(
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -42,10 +42,10 @@ class MyApp extends StatelessWidget {
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       title: 'Tasks',
-      theme: const CupertinoThemeData(
+      theme: ThemeData(
           scaffoldBackgroundColor: Colors.black,
           brightness: Brightness.dark,
-          barBackgroundColor: Colors.black),
+          appBarTheme: const AppBarTheme(backgroundColor: Colors.black)),
       home: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
