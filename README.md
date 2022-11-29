@@ -27,20 +27,6 @@
 * Multi-color theme
 * Minimal and clean
 
-# Command
-### Install dependencies
-
-```sh
-flutter pub get
-```
-
-### Run application
-
-```sh
-flutter emulators --launch <emulator_name>
-flutter run
-```
-
 # Tech Stack
 
 - [Flutter](https://flutter.dev)
