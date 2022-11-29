@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tasks/utils/global.dart';
@@ -28,12 +29,17 @@ class _DeleteScreenState extends State<DeleteScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CupertinoNavigationBar(
+        padding: EdgeInsetsDirectional.zero,
+        backgroundColor: Colors.black,
+        leading: CupertinoNavigationBarBackButton(
+          onPressed: () => Get.back(),
+        ),
+      ),
       backgroundColor: backgroundColor,
       body: Container(
         width: double.infinity,
         margin: const EdgeInsets.only(left: 20.0, right: 20.0),
-        height: double.infinity,
-        alignment: Alignment.center,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
