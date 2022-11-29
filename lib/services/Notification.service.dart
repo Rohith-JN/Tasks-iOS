@@ -39,5 +39,3 @@ class NotificationService {
         androidAllowWhileIdle: false);
   }
 }
-
-// Method definition for 'setRegisterPlugins:' not found

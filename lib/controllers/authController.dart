@@ -127,11 +127,10 @@ class AuthController extends GetxController {
             ),
             TextButton(
               onPressed: () async {
-                /*
-                 NotificationService()
+                NotificationService()
                     .flutterLocalNotificationsPlugin
                     .cancelAll();
-                */
+
                 await _auth.signOut();
                 Get.find<UserController>().clear();
                 Get.delete<ArrayController>();
@@ -161,7 +160,7 @@ class AuthController extends GetxController {
               color: primaryColor,
             ))));
     try {
-      // NotificationService().flutterLocalNotificationsPlugin.cancelAll();
+      NotificationService().flutterLocalNotificationsPlugin.cancelAll();
       Database().deleteUser(_auth.currentUser!.uid);
       AuthCredential authCredential =
           EmailAuthProvider.credential(email: email, password: password);
