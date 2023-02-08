@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:tasks/controllers/arrayController.dart';
 import 'package:tasks/models/FTodo.dart';
-import 'package:tasks/services/functions.services.dart';
+import 'package:tasks/services/functions.service.dart';
 import 'package:tasks/utils/routes.dart';
 import 'package:tasks/utils/global.dart';
 import 'package:flutter/material.dart';

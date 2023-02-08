@@ -3,7 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:tasks/controllers/arrayController.dart';
 import 'package:tasks/controllers/authController.dart';
-import 'package:tasks/services/functions.services.dart';
+import 'package:tasks/services/functions.service.dart';
 import 'package:tasks/utils/global.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
